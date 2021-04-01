@@ -1,7 +1,15 @@
-import React from 'react';
-import { StyleSheet, Text, StatusBar, KeyboardAvoidingView, View, TouchableOpacity, TextInput, Image} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, StatusBar, KeyboardAvoidingView, View, TouchableOpacity, TextInput, Image, Animated} from 'react-native';
 
 export default function App() {
+
+  const[offset] = useState(new Animated.ValueXY({x:0, y:95}))
+  const [opacity] = useState(new Animated.Value(0))
+
+  useEffect(()=>{ Animated.parallel([ Animated.spring(offset.y,{ toValue:0, speed:4, bounciness:20}), 
+    Animated.timing(opacity,{toValue:1, duration:300,}) 
+    ]).start() }, []);
+
   return (    
     <KeyboardAvoidingView style={myStyle.body}>
       <StatusBar backgroundColor='#35AAFF' barStyle='light-content' />
@@ -9,7 +17,7 @@ export default function App() {
           <Image source={require('./assets/img/react.png')} />    
       </View>      
     
-      <View style={[myStyle.container]}>
+      <Animated.View style={[ myStyle.container, {opacity: opacity, transform:[{translateY: offset.y }] } ]}>
         <TextInput style={myStyle.input} placeholder="Email" autoCorrect={false} onChangeText={()=>{}} />     
       
         <TextInput style={myStyle.input} placeholder="Senha" secureTextEntry={true} autoCorrect={false} onChangeText={()=>{}} />
@@ -23,7 +31,7 @@ export default function App() {
           <Text style={myStyle.txtRegister}>Criar Conta</Text> 
         </TouchableOpacity>    
       
-      </View>
+      </Animated.View>
     </KeyboardAvoidingView>
   );
 }
@@ -38,14 +46,14 @@ const myStyle = StyleSheet.create({
 
   logo:{    
     justifyContent:'center',
-    flex: 1,        
+    flex: 1,                
   },
 
   container:{
     flex:1,
     alignItems:'center',
     justifyContent:'center',
-    width:'90%',
+    width:'90%',   
   },
 
   input:{    
@@ -55,8 +63,7 @@ const myStyle = StyleSheet.create({
     fontSize:17,
     borderRadius:7,
     marginBottom:15,
-    padding:10,
-
+    padding:10,    
   },
 
   btn:{
